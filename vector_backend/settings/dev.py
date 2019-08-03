@@ -24,5 +24,7 @@ STATICFILES_DIRS = (
 STATIC_URL = '/api/static/'
 
 # media files
-MEDIA_ROOT = "/home/wudaown/workspace/vector_backend/wireguard_conf"
+ROOT_DIR = BASE_DIR.replace('vector_backend', '', 1)
+# MEDIA_ROOT = "/home/wudaown/workspace/vector_backend/wireguard_conf"
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'wireguard_conf')
 MEDIA_URL = "media/"

@@ -9,12 +9,13 @@ if [ "$#" -ne 1 ]; then
 fi
 SERVER_IP=$1
 
-# # Add repo
-# sudo add-apt-repository ppa:wireguard/wireguard -y
-# # Update cache
-# sudo apt update 
-# # Install wireguard
-# sudo apt install wireguard
+sudo install software-properties-common -y
+# Add repo
+sudo add-apt-repository ppa:wireguard/wireguard -y
+# Update cache
+sudo apt update 
+# Install wireguard -y
+sudo apt install wireguard -y
 
 # TODO
 # if conf already exists use it
