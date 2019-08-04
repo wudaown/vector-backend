@@ -49,6 +49,7 @@ class Wireguard:
         run(f"rm {path}", hide=True)
 
     def construct(self, public_key, ip):
+        ip = ip.replace('/24', '/32')
         removal = f"[Peer]\nPublicKey = {public_key}\nAllowedIPs = {ip}"
         return removal
 
@@ -56,6 +57,7 @@ class Wireguard:
         pk = instance.pk
         client_public_key = instance.public_key
         client_ip_range = instance.ip
+        client_ip_range = client_ip_range.replace('/24', '/32')
         with open(PEER_TEMPLATE) as fh:
             peer_template = fh.read()
         peer_conf = peer_template.replace('#PUBLICKEY', client_public_key).replace(

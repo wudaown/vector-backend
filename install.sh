@@ -9,7 +9,12 @@ if [ "$#" -ne 1 ]; then
 fi
 SERVER_IP=$1
 
-sudo install software-properties-common -y
+echo 'Disable firewall'
+systemctl disable ufw
+systemctl stop ufw
+
+echo 'Install wireguard'
+sudo apt install software-properties-common -y
 # Add repo
 sudo add-apt-repository ppa:wireguard/wireguard -y
 # Update cache
@@ -23,6 +28,11 @@ sudo apt install wireguard -y
 # if [ ! -d $DEFAULT_CONF_DIR ]; then
 #     sudo cp DEFAULT_CONF_DIR ./wireguard_conf/wg0.conf
 # fi
+
+echo 'Enable ip forwarding'
+sudo echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+sudo sysctl -p /etc/sysctl.conf
+sudo sysctl -w net.ipv4.ip_forward=1
 
 PWD=$(pwd)
 
@@ -72,3 +82,9 @@ PrivateKey = ${PRIVATEKEY}
 rm privatekey publickey
 
 sudo ln -s $PWD/$SERVER_CONFIG /etc/wireguard/wg0.conf
+
+echo 'Enable wireguard as a service'
+sudo systemctl enable wg-quick@wg0
+
+echo 'Start wireguard service'
+sudo systemctl start wg-quick@wg0
