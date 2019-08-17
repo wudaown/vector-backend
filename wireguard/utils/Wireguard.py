@@ -12,9 +12,9 @@ class Wireguard:
     def genkey_client(self):
         cmd = "wg genkey | tee privatekey | wg pubkey > publickey"
         run(cmd, hide=True)
-        cmd = 'cat privatekey'
+        cmd = 'cat privatekey && rm privatekey'
         client_private_key = run(cmd, hide=True).stdout.strip()
-        cmd = 'cat publickey'
+        cmd = 'cat publickey && rm publickey'
         client_public_key = run(cmd, hide=True).stdout.strip()
         return client_private_key, client_public_key
 
@@ -47,6 +47,8 @@ class Wireguard:
         filename = f"{instance.device}_{instance.platform}.conf"
         path = os.path.join(CLIENT_CONFIG_DIR, filename)
         run(f"rm {path}", hide=True)
+        cmd = f'sudo wg set wg0 peer {instance.public_key} remove'
+        run(cmd, hide=True)
 
     def construct(self, public_key, ip):
         ip = ip.replace('/24', '/32')
@@ -64,3 +66,8 @@ class Wireguard:
             '#IPADDR', client_ip_range)
         with open(self.server_conf, 'a') as fh:
             fh.write(peer_conf)
+        cmd = f'sudo wg set wg0 peer {client_public_key} allowed-ips
+        {client_ip_range}'
+        # TODO
+        # log addition of client
+        run(cmd, hide=True)

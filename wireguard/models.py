@@ -12,6 +12,7 @@ class Client(models.Model):
     mode = models.CharField(max_length=50)
     platform = models.CharField(max_length=50)
     device = models.CharField(max_length=50)
+    ip_range = models.CharField(max_length=50)
 
 
 class Server(models.Model):
