@@ -60,12 +60,16 @@ class ClientViewsets(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
             if mode == 'lan':
                 # ip_range = '10.0.0.0/24'
                 ip_range = '{net}.0/{subnet}'.format(net=NET_ID, subnet=SUBNET)
+                extra_range = data.get('range')
+                if extra_range.__len__() > 1:
+                    ip_range += f", {extra_range}"
             else:
                 ip_range = '0.0.0.0/0'
             server_public_key = server.public_key
             server_wan_ip = server.wan_ip
             server_port = server.port
             client_private_key, client_public_key = wireguard.genkey_client()
+            data['ip_range'] = ip_range
             data['public_key'] = client_public_key
             data['private_key'] = client_private_key
             data['ip'] = ip
