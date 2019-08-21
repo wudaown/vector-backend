@@ -22,12 +22,12 @@ sudo apt update
 # Install wireguard -y
 sudo apt install wireguard -y
 
-echo 'Allow non root user to execute wg and wg-quick'
-USER=$(whoami)
-WG=$(which wg)
-WGQUICK=$(which wg-quick)
-sudo su -c 'echo $USER ALL=(ALL) NOPASSWD: $WG >> /etc/sudoers'
-sudo su -c 'echo $USER ALL=(ALL) NOPASSWD: $WGQUICK >> /etc/sudoers'
+# echo 'Allow non root user to execute wg and wg-quick'
+# USER=$(whoami)
+# WG=$(which wg)
+# WGQUICK=$(which wg-quick)
+# sudo su -c 'echo $USER ALL=(ALL) NOPASSWD: $WG >> /etc/sudoers'
+# sudo su -c 'echo $USER ALL=(ALL) NOPASSWD: $WGQUICK >> /etc/sudoers'
 
 # TODO
 # if conf already exists use it
@@ -86,6 +86,9 @@ ListenPort = ${PORT}
 PrivateKey = ${PRIVATEKEY}
 " >> ${SERVER_CONFIG}
 
+echo 'Give user permission for wg0.conf'
+sudo chown $USER:$USER $PWD/wireguard_conf
+
 rm privatekey publickey
 
 sudo ln -s $PWD/$SERVER_CONFIG /etc/wireguard/wg0.conf
@@ -95,3 +98,5 @@ sudo systemctl enable wg-quick@wg0
 
 echo 'Start wireguard service'
 sudo systemctl start wg-quick@wg0
+
+echo 'Please give permission for non root user for wg and wg-quick'
