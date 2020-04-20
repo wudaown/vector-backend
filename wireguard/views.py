@@ -1,4 +1,5 @@
 import os
+import random
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
@@ -46,12 +47,16 @@ class ClientViewsets(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
         else:
             server = Server.objects.first()
         num_of_client = Client.objects.count()
-        if num_of_client >= 243:
+        if num_of_client >= 240:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             # ip = '10.0.0.{}/24'.format(Client.objects.count() + 10)
-            ip = '{net}.{host}/{subnet}'.format(net=NET_ID,
-                                                host=Client.objects.count() + 10, subnet=SUBNET)
+            exists = True
+            while exists:
+                ip = f"{NET_ID}.{random.randint(2,240)}/{SUBNET}"
+                client = Client.objects.filter(ip=ip)
+                if client.__len__() == 0:
+                    exists = False
             device = data.get('device')
             platform = data.get('platform')
             mode = data.get('mode')
