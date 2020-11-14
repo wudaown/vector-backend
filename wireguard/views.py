@@ -3,6 +3,7 @@ import random
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import TemplateView
 
 from .models import Server, Client
 from .serializers import ClientSerializer, ServerSerializer
@@ -18,6 +19,9 @@ SERVER_IP = os.environ['SERVER_IP']
 NET_ID = SERVER_IP.split('.')[:3]
 NET_ID = '.'.join(NET_ID)
 HOST_ID, SUBNET = SERVER_IP.split('.')[-1].split('/')
+
+
+index = TemplateView.as_view(template_name='index.html')
 
 
 class ClientViewsets(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
@@ -90,9 +94,12 @@ class ClientViewsets(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retr
     def import_server(self):
         config = dict()
         with open(SERVER_CONFIG) as fh:
-            for i in range(5):
-                key, val = fh.readline().split()
-                config[key[1:].lower()] = val.strip()
+            for i in range(6):
+                if i == 0:
+                    fh.readline()
+                else:
+                    key, val = fh.readline().split()
+                    config[key[1:].lower()] = val.strip()
         server = Server(**config)
         server.save()
         return server

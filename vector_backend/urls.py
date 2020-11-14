@@ -5,7 +5,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.authtoken import views
 
-from wireguard.views import ClientViewsets, ServerViewset
+from wireguard.views import ClientViewsets, ServerViewset, index
 
 router = routers.DefaultRouter()
 
@@ -17,9 +17,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include((router.urls))),
     path('api/', include('rest_framework.urls')),
-    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth')
-
+    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
+    path("", index, name="index")
 ]
+
 
 if settings.DEBUG is True:
     urlpatterns += static(settings.MEDIA_URL,

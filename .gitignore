@@ -2,3 +2,4 @@ wireguard_conf
 vector_backend/db.sqlite3
 **/**/__pycache__/
 .vscode/
+frontend/build

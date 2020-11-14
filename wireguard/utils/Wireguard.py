@@ -47,7 +47,7 @@ class Wireguard:
         filename = f"{instance.device}_{instance.platform}.conf"
         path = os.path.join(CLIENT_CONFIG_DIR, filename)
         run(f"rm {path}", hide=True)
-        cmd = f'sudo wg set wg0 peer {instance.public_key} remove'
+        cmd = f'wg set wg0 peer {instance.public_key} remove'
         run(cmd, hide=True)
 
     def construct(self, public_key, ip):
@@ -66,7 +66,7 @@ class Wireguard:
             '#IPADDR', client_ip_range)
         with open(self.server_conf, 'a') as fh:
             fh.write(peer_conf)
-        cmd = f'sudo wg set wg0 peer {client_public_key} allowed-ips {client_ip_range}'
+        cmd = f'wg set wg0 peer {client_public_key} allowed-ips {client_ip_range}'
         # TODO
         # log addition of client
         run(cmd, hide=True)

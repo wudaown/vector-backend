@@ -15,4 +15,3 @@ class WireguardConfig(AppConfig):
                 ip = line.strip().replace("#IP", "").strip()
                 os.environ['SERVER_IP'] = ip
                 break
-        print(ip)
