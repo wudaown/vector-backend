@@ -8,26 +8,29 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 SERVER_IP=$1
+DIST_VERSION=$(lsb_release -r -s)
 
 echo 'Disable firewall'
 systemctl disable ufw
 systemctl stop ufw
 
 echo 'Install wireguard'
-sudo apt install software-properties-common -y
-# Add repo
-sudo add-apt-repository ppa:wireguard/wireguard -y
+if [ $DIST_VERSION != "20.04" ]; then
+	sudo apt install software-properties-common -y
+	# Add repo
+	sudo add-apt-repository ppa:wireguard/wireguard -y
+fi
 # Update cache
 sudo apt update 
 # Install wireguard -y
-sudo apt install wireguard -y
+sudo apt install wireguard net-tools -y
 
-# echo 'Allow non root user to execute wg and wg-quick'
-# USER=$(whoami)
-# WG=$(which wg)
-# WGQUICK=$(which wg-quick)
-# sudo su -c 'echo $USER ALL=(ALL) NOPASSWD: $WG >> /etc/sudoers'
-# sudo su -c 'echo $USER ALL=(ALL) NOPASSWD: $WGQUICK >> /etc/sudoers'
+echo 'Allow non root user to execute wg and wg-quick'
+USER=$(whoami)
+WG=$(which wg)
+WGQUICK=$(which wg-quick)
+sudo su -c "echo $USER ALL=\(ALL\) NOPASSWD: $WG >> /etc/sudoers"
+sudo su -c "echo $USER ALL=\(ALL\) NOPASSWD: $WGQUICK >> /etc/sudoers"
 
 # TODO
 # if conf already exists use it
